@@ -1,14 +1,20 @@
+#[derive(Debug, Hash, PartialEq, Eq)]
+struct Location {
+    x: i16,
+    y: i16,
+}
+
 #[derive(Debug)]
-enum Location {
+enum LocationData {
     Asteroid,
     Empty,
 }
 
-impl From<char> for Location {
+impl From<char> for LocationData {
     fn from(c: char) -> Self {
         match c {
-            '#' => Location::Asteroid,
-            '.' => Location::Empty,
+            '#' => LocationData::Asteroid,
+            '.' => LocationData::Empty,
             x => panic!("Unknown symbol {}", x)
         }
     }
@@ -16,7 +22,7 @@ impl From<char> for Location {
 
 #[derive(Default, Debug)]
 struct Field {
-    locations: std::collections::HashMap::<(i16, i16), Location>,
+    locations: std::collections::HashMap::<Location, LocationData>,
 }
 
 impl Field {
@@ -27,7 +33,8 @@ impl Field {
         for line in content.lines() {
             let mut x : i16 = 0;
             for c in line.chars() {
-                field.locations[(x, y)] = c.into();
+                let location = Location { x, y };
+                field.locations.insert(location, c.into());
                 x += 1;
             }
             y += 1;
